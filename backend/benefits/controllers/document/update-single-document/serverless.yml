@@ -1,0 +1,21 @@
+updateSingleDocumentBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:provider.stage}-updateSingleDocumentBenefits
+  description: Update single document for a specific user in a specific account
+  handler: controllers/document/update-single-document/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: documents/update-single-document/{account_id}/{cognito_id}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

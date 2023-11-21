@@ -1,0 +1,18 @@
+createSingleAgentCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-createSingleAgentCS
+  description: Create a new agent record
+  handler: controllers/agents/create-single-agent/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /agents/create-single-agent/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

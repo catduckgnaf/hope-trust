@@ -1,0 +1,21 @@
+declineWholesaleRequest:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-declineWholesaleRequest
+  description: Decline a wholesale request
+  handler: controllers/wholesale/decline-wholesale-request/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: /wholesale/decline-wholesale-request/{request_id}/{account_id}/{cognito_id}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

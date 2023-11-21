@@ -1,0 +1,21 @@
+removeUserPermissions:
+  tracing: PassThrough
+  tags:
+    RESOURCE: permission
+  name: ${self:app}-${self:provider.stage}-removeUserPermissions
+  description: Remove an array of permissions from a specific user of a specific account.
+  handler: controllers/permission/remove-user-permissions/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: permissions/remove/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

@@ -1,0 +1,18 @@
+createPartnerPlanCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:provider.stage}-createPartnerPlanCS
+  description: Create a new plan record for partners
+  handler: controllers/plan/create-partner-plan/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plans/create-partner-plan/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

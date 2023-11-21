@@ -1,0 +1,18 @@
+deleteSingleUserCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-deleteSingleUserCS
+  description: deletes single user from database by ID
+  handler: controllers/user/delete-single-user/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /users/delete/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

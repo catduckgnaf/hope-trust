@@ -1,0 +1,16 @@
+getUserAvatarCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-getUserAvatarCS
+  description: Gets single user avatar from database by cognito_id
+  handler: controllers/user/get-user-avatar/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /users/get-user-avatar/{cognito_id}
+        method: get

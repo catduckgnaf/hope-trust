@@ -1,0 +1,18 @@
+getTickets:
+  tracing: PassThrough
+  tags:
+    RESOURCE: tickets
+  name: ${self:app}-${self:provider.stage}-getTickets
+  description: Get all tickets
+  handler: controllers/tickets/get-tickets/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /tickets/get-tickets/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

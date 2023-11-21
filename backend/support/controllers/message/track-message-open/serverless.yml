@@ -1,0 +1,16 @@
+trackMessageOpen:
+  tracing: PassThrough
+  tags:
+    RESOURCE: message
+  name: ${self:app}-${self:provider.stage}-trackMessageOpen
+  description: Track a message sent to an email
+  handler: controllers/message/track-message-open/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /messages/track-message-open/{message_id}
+        method: get

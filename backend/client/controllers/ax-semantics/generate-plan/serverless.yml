@@ -1,0 +1,18 @@
+generatePlan:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ax-semantics
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-generatePlan
+  description: Generate a full PDF document based on array of project IDs
+  handler: controllers/ax-semantics/generate-plan/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /ax-semantics/generate-plan/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

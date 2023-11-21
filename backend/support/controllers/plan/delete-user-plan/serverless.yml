@@ -1,0 +1,18 @@
+deleteUserPlanCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:provider.stage}-deleteUserPlanCS
+  description: Delete a user plan by ID
+  handler: controllers/plan/delete-user-plan/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plans/delete-user-plan/{plan_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

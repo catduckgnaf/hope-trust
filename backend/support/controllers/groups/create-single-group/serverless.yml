@@ -1,0 +1,18 @@
+createSingleGroupCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-createSingleGroupCS
+  description: Create a new group record
+  handler: controllers/groups/create-single-group/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /groups/create-single-group/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

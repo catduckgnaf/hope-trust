@@ -1,0 +1,15 @@
+CORE_SERVICE: ${file(../../serverless.yml):service}
+SERVICE: ${self:service}
+STAGE: ${self:provider.stage}
+REGION: ${self:provider.region}
+DB_HOST: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/db-host}
+DB_NAME: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/db-name}
+DB_USER: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/db-user}
+DB_PASSWORD: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/db-password}
+USER_POOL_ID: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/client/user-pool-id}
+ACCESS_KEY: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/aws-access-key}
+SECRET_KEY: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/aws-secret-key}
+STRIPE_SECRET_KEY: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/stripe-secret-key}
+STRIPE_WEBHOOK_SECRET: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/stripe-webhook-secret}
+SENDGRID_API_KEY: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/sendgrid-api-key}
+HUBSPOT_ACCESS_TOKEN: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/hubspot-access-token}

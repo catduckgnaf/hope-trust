@@ -1,0 +1,18 @@
+getAccountFeaturesCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-getAccountFeaturesCS
+  description: Fetch account features for a specific account
+  handler: controllers/get-account-features/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /get-account-features/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+deleteMessagesCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: messages
+  name: ${self:app}-${self:provider.stage}-deleteMessagesCS
+  description: Delete many messages
+  handler: controllers/message/delete-messages/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /messages/delete-messages/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

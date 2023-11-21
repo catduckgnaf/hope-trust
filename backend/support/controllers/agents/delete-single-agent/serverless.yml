@@ -1,0 +1,18 @@
+deleteSingleAgentCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-deleteSingleAgentCS
+  description: Deletes single agent record
+  handler: controllers/agents/delete-single-agent/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /agents/delete-single-agent/{agent_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

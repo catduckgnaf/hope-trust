@@ -1,0 +1,21 @@
+updateBenefitsConfigBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-updateBenefitsConfigBenefits
+  description: Update benefits config record
+  handler: controllers/account/update-benefits-config/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: /accounts/update-benefits-config/{config_id}/{account_id}/{cognito_id}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

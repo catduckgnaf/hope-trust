@@ -1,0 +1,14 @@
+receiveApplicationEmailCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-receiveApplicationEmailCS
+  description: Receive an application email, route accordingly
+  handler: controllers/receive-application-email/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: "*"

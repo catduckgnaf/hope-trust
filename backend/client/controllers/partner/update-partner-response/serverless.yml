@@ -1,0 +1,18 @@
+updatePartnerResponse:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-updatePartnerResponse
+  description: Update a partner quiz response
+  handler: controllers/partner/update-partner-response/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/update-partner-response/{response_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

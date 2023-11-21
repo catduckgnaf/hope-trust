@@ -1,0 +1,18 @@
+createCEConfigCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ce
+  name: ${self:app}-${self:provider.stage}-createCEConfigCS
+  description: Create a new CE configuration
+  handler: controllers/ce/create-ce-config/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /ce/create-ce-config/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

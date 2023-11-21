@@ -1,0 +1,18 @@
+deleteSingleGroupCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-deleteSingleGroupCS
+  description: Deletes single group record
+  handler: controllers/groups/delete-single-group/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /groups/delete-single-group/{group_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

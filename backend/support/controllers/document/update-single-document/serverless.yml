@@ -1,0 +1,18 @@
+updateSingleDocumentCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:provider.stage}-updateSingleDocumentCS
+  description: Update single document for a specific user in a specific account
+  handler: controllers/document/update-single-document/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /documents/update-single-document/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

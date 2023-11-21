@@ -1,0 +1,21 @@
+createSubscriptionBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:provider.stage}-createSubscriptionBenefits
+  description: Create a stripe subscription
+  handler: controllers/stripe/create-subscription/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: stripe/create-subscription/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

@@ -1,0 +1,18 @@
+updateAccountMembershipCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: membership
+  name: ${self:app}-${self:provider.stage}-updateAccountMembershipCS
+  description: Update a single account membership
+  handler: controllers/membership/update-account-membership/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /membership/update/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

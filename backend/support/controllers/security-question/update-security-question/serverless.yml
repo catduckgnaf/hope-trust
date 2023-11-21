@@ -1,0 +1,18 @@
+updateSecurityQuestionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: security-question
+  name: ${self:app}-${self:provider.stage}-updateSecurityQuestionCS
+  description: Update single security question by ID
+  handler: controllers/security-question/update-security-question/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /security-questions/update-security-question/{question_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

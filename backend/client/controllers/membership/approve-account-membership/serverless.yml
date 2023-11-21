@@ -1,0 +1,18 @@
+approveAccountMembership:
+  tracing: PassThrough
+  tags:
+    RESOURCE: membership
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-approveAccountMembership
+  description: Approve a single account membership
+  handler: controllers/membership/approve-account-membership/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /membership/approve-account-membership/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

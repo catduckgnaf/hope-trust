@@ -1,0 +1,18 @@
+forgotPassword:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-user-forgotPassword
+  description: Send password reset to an email
+  handler: controllers/forgot-password/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /forgot-password
+        method: get

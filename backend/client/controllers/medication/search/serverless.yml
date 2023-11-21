@@ -1,0 +1,18 @@
+searchMedications:
+  tracing: PassThrough
+  tags:
+    RESOURCE: medication
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-searchMedications
+  description: Search DrugBank for medications by name
+  handler: controllers/medication/search/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /medications/search/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,17 @@
+getPublicRetailersBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getPublicRetailersBenefits
+  description: Get all active retailers
+  handler: controllers/retail/get-public-retailers/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: retail/get-public-retailers
+        method: get
+        cors: true

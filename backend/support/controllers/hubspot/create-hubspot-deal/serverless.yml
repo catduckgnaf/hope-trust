@@ -1,0 +1,16 @@
+createHubspotDeal:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hubspot
+  name: ${self:app}-${self:provider.stage}-createHubspotDeal
+  description: Create a Hubspot deal
+  handler: controllers/hubspot/create-hubspot-deal/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hubspot/create-hubspot-deal
+        method: post

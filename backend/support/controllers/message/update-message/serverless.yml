@@ -1,0 +1,18 @@
+updateMessage:
+  tracing: PassThrough
+  tags:
+    RESOURCE: message
+  name: ${self:app}-${self:provider.stage}-updateMessage
+  description: Update a message
+  handler: controllers/message/update-message/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /messages/update-message/{message_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

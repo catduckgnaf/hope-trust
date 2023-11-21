@@ -1,0 +1,18 @@
+createMultiInvoice:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createMultiInvoice
+  description: Create and charge an invoice with mutliple line items
+  handler: controllers/stripe/create-multi-invoice/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/create-multi-invoice/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

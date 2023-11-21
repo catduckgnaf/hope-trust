@@ -1,0 +1,17 @@
+processCancellationQueueCS:
+  tracing: PassThrough
+  timeout: 180
+  tags:
+    RESOURCE: cron
+  name: ${self:app}-${self:provider.stage}-processCancellationQueueCS
+  description: Check for processing in-transfer, attempt to process and update
+  handler: controllers/cron/process-cancellation-queue/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - schedule:
+        rate: rate(5 minutes)
+        enabled: ${self:custom.common.schedule_status.${opt:stage, "default"}}

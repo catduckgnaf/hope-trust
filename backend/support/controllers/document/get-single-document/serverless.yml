@@ -1,0 +1,18 @@
+getSingleDocumentCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:provider.stage}-getSingleDocumentCS
+  description: Get a single account document by ID
+  handler: controllers/document/get-single-document/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /documents/get-single-document/{account_id}/{cognito_id}
+        method: POST
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

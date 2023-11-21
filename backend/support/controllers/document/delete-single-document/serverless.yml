@@ -1,0 +1,18 @@
+deleteSingleDocumentCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:provider.stage}-deleteSingleDocumentCS
+  description: Delete single document for a specific account
+  handler: controllers/document/delete-single-document/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /documents/delete-single-document/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

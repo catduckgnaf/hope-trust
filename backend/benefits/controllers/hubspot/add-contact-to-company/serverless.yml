@@ -1,0 +1,17 @@
+addHubspotContactToCompany:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hubspot
+  name: ${self:app}-${self:provider.stage}-addHubspotContactToCompany
+  description: Add a contact to a company
+  handler: controllers/hubspot/add-contact-to-company/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: hubspot/add-contact-to-company
+        method: post
+        cors: true

@@ -1,0 +1,18 @@
+createSingleWholesalerCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-createSingleWholesalerCS
+  description: Create a new wholesaler record
+  handler: controllers/wholesale/create-single-wholesaler/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /wholesale/create-single-wholesaler/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

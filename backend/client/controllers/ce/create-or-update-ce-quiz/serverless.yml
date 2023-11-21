@@ -1,0 +1,18 @@
+createOrUpdateCEQuiz:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ce
+  name: ${self:app}-${self:provider.stage}-createOrUpdateCEQuiz
+  description: Update a CE quiz
+  handler: controllers/ce/create-or-update-ce-quiz/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /ce/create-or-update-ce-quiz/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

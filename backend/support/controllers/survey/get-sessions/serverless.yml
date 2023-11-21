@@ -1,0 +1,18 @@
+getSurveySessionsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: surveys
+  name: ${self:app}-${self:provider.stage}-getSurveySessionsCS
+  description: Get all survey sessions
+  handler: controllers/survey/get-sessions/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey/get-sessions/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

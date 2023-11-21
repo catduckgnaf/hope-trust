@@ -1,0 +1,18 @@
+getWholesalepprovalsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-getWholesaleApprovalsCS
+  description: Gets all pending wholesale benefits approvals
+  handler: controllers/get-wholesale-approvals/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /get-wholesale-approvals/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

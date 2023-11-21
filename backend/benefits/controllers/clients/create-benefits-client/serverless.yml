@@ -1,0 +1,21 @@
+createBenefitsClientBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ce
+  name: ${self:app}-${self:provider.stage}-createBenefitsClientBenefits
+  description: Create a new benefits record for a client account
+  handler: controllers/clients/create-benefits-client/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: clients/create-benefits-client/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

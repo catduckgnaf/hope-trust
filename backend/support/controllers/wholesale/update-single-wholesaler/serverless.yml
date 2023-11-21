@@ -1,0 +1,18 @@
+updateSingleWholesalerCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-updateSingleWholesalerCS
+  description: Update single wholesaler record
+  handler: controllers/wholesale/update-single-wholesaler/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /wholesale/update-single-wholesaler/{wholesaler_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

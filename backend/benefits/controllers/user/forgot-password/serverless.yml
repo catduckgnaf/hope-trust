@@ -1,0 +1,19 @@
+forgotPasswordBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-forgotPasswordBenefits
+  description: Send password reset to an email
+  handler: controllers/user/forgot-password/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: "*"
+  events:
+    - http:
+        path: users/forgot-password
+        method: get
+        cors: true

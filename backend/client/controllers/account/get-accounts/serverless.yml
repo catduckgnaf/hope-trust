@@ -1,0 +1,18 @@
+getAccounts:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getAccounts
+  description: Gets all users associated with an account
+  handler: controllers/account/get-accounts/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /accounts/get-accounts/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

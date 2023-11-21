@@ -1,0 +1,21 @@
+updateRequestTicket:
+  tracing: PassThrough
+  tags:
+    RESOURCE: zendesk
+  name: ${self:app}-${self:provider.stage}-updateRequestTicket
+  description: Update a zendesk request ticket for a specific user in a specific account
+  handler: controllers/zendesk/update-request-ticket/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: zendesk/update-request-ticket/{account_id}/{cognito_id}/{ticket_id}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

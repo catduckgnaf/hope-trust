@@ -1,0 +1,19 @@
+clearAccountSurvey:
+  tracing: PassThrough
+  tags:
+    RESOURCE: survey
+  memorySize: 3008
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-clearAccountSurvey
+  description: Clear a survey session and responses for a specific survey n a specific account
+  handler: controllers/survey-gizmo/clear-account-survey/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey-gizmo/clear-account-survey/{survey_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

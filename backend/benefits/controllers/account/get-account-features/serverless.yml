@@ -1,0 +1,21 @@
+getAccountFeaturesBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-getAccountFeaturesBenefits
+  description: Fetch account features for a specific account
+  handler: controllers/account/get-account-features/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: accounts/get-account-features/{account_id}/{cognito_id}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

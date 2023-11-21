@@ -1,0 +1,21 @@
+createNewGroupBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-createNewGroupBenefits
+  description: Create a new group record
+  handler: controllers/groups/create-new-group/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: groups/create-new-group/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

@@ -1,0 +1,18 @@
+getPlaidAccounts:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plaid
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getPlaidAccounts
+  description: Get all plaid accounts
+  handler: controllers/plaid/get-plaid-accounts/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plaid/get-plaid-accounts/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

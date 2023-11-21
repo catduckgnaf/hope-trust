@@ -1,0 +1,21 @@
+getAccountDocumentsBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:provider.stage}-getAccountDocumentsBenefits
+  description: Get all documents for an account
+  handler: controllers/document/get-account-documents/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: documents/get-account-documents/{account_id}/{cognito_id}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

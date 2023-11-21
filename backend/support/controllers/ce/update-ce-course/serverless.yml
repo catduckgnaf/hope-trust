@@ -1,0 +1,18 @@
+updateCECourseCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ce
+  name: ${self:app}-${self:provider.stage}-updateCECourseCS
+  description: Update a CE course
+  handler: controllers/ce/update-ce-course/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /ce/update-ce-course/{course_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

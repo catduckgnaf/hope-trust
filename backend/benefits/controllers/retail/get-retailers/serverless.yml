@@ -1,0 +1,21 @@
+getRetailersBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getRetailersBenefits
+  description: Get all retail memberships associated with an account
+  handler: controllers/retail/get-retailers/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: retail/get-retailers/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

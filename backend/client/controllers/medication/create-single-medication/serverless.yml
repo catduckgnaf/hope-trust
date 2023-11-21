@@ -1,0 +1,18 @@
+createSingleMedication:
+  tracing: PassThrough
+  tags:
+    RESOURCE: medication
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createSingleMedication
+  description: Create a new medication for a specific account
+  handler: controllers/medication/create-single-medication/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /medications/create-single-medication/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

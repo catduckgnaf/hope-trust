@@ -1,0 +1,18 @@
+getStripeCustomer:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getStripeCustomer
+  description: Get an expanded Stripe customer including sources
+  handler: controllers/stripe/get-stripe-customer/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/get-stripe-customer/{customer_id}/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+getGrantorAssets:
+  tracing: PassThrough
+  tags:
+    RESOURCE: finance
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getGrantorAssets
+  description: Gets grantor assets for a specific account
+  handler: controllers/finance/grantor-assets/get-grantor-assets/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /finance/get-grantor-assets/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

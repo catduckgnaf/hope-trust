@@ -1,0 +1,16 @@
+updateHubspotCompany:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hubspot
+  name: ${self:app}-${self:provider.stage}-updateHubspotCompany
+  description: Update a Hubspot company
+  handler: controllers/hubspot/update-hubspot-company/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hubspot/update-hubspot-company/{hubspot_company_id}
+        method: patch

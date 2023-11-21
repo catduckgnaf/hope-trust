@@ -1,0 +1,60 @@
+org: hopeportalservices # get orgId from serverless dashboard
+app: hopetrust # app name, will be prepended to resource and variable names
+service: ${self:app}-frontend
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, self:custom.defaultStage}
+  kmsKeyArn: arn:aws:kms:us-east-1:876754924956:key/bef141f2-57be-47f5-a7d0-689c4a945762
+  environment:
+    REACT_APP_NAME: ${self:app}
+    REACT_APP_STAGE: ${self:provider.stage}
+    REACT_APP_REGION: ${self:provider.region}
+    REACT_APP_DOMAIN: ${self:custom.domain}
+    REACT_APP_API_BASE: ${self:custom.api_base}
+    REACT_APP_USER_POOL_ID: ${ssm:${self:custom.service_secrets}/user-pool-id}
+    REACT_APP_APP_CLIENT_ID: ${ssm:${self:custom.service_secrets}/app-client-id}
+    REACT_APP_IDENTITY_POOL_ID: ${ssm:${self:custom.service_secrets}/identity-pool-id}
+    REACT_APP_APP_NAME: ${self:custom.domain}
+    REACT_APP_API_SERVICE: ${self:custom.api-service-name}
+    REACT_APP_STRIPE_PUBLIC_KEY: ${ssm:${self:custom.secrets}/stripe-public-key}
+    REACT_APP_ZENDESK_WIDGET_KEY: ${ssm:${self:custom.secrets}/zendesk-widget-key}
+    REACT_APP_PLAID_PUBLIC_KEY: ${ssm:${self:custom.secrets}/plaid-public-key}
+    REACT_APP_USERSNAP_API_KEY: ${ssm:${self:custom.secrets}/usersnap-api-key}
+    REACT_APP_HELLOSIGN_CLIENT_ID: ${ssm:${self:custom.secrets}/hello-sign-client-id}
+    REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID: ${ssm:${self:custom.secrets}/google-analytics-tracking-id}
+    REACT_APP_FIREBASE_API_KEY: ${ssm:${self:custom.secrets}/firebase-api-key}
+
+plugins:
+  - serverless-offline
+  - serverless-finch
+  - serverless-build-client
+
+custom:
+  app_slug: client
+  api_base: ${file(../../backend/custom.yml):common.api_base}
+  domain: hopecareplan.com
+  api-service-name: ${file(../../backend/custom.yml):common.secrets_folder}
+  client:
+    bucketName: ${self:custom.defaultBucket}
+    distributionFolder: ./build
+    indexDocument: index.html
+    errorDocument: index.html
+    uploadOrder:
+      - .*
+      - static/*
+      - index\.html
+    objectHeaders:
+      'index.html':
+        - name: Cache-Control
+          value: no-cache
+      'service-worker.js':
+        - name: Cache-Control
+          value: no-cache
+  defaultStage: development
+  service_secrets: ${self:custom.api-service-name}/${self:provider.stage}/${self:custom.app_slug}
+  secrets: ${self:custom.api-service-name}/${self:provider.stage}
+  defaultBucket: ${self:provider.stage}.${self:custom.domain}

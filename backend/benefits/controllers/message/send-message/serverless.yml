@@ -1,0 +1,21 @@
+sendMessage:
+  tracing: PassThrough
+  tags:
+    RESOURCE: message
+  name: ${self:app}-${self:provider.stage}-sendMessage
+  description: Send a message
+  handler: controllers/message/send-message/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: messages/send-message/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

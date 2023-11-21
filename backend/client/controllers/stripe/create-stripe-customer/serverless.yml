@@ -1,0 +1,18 @@
+createStripeCustomer:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createStripeCustomer
+  description: Create a Stripe customer record
+  handler: controllers/stripe/create-stripe-customer/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/create-stripe-customer/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

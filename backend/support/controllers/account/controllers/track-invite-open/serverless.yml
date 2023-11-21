@@ -1,0 +1,16 @@
+trackInviteOpen:
+  tracing: PassThrough
+  tags:
+    RESOURCE: clients
+  name: ${self:app}-${self:provider.stage}-accounts-trackInviteOpen
+  description: Track a invite sent to an email
+  handler: controllers/track-invite-open/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /track-invite-open/{invite_id}
+        method: get

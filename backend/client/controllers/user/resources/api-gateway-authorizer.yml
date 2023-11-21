@@ -1,0 +1,21 @@
+Resources:
+  ApiGatewayAuthorizer:
+    DependsOn:
+    - HttpApi
+    Type: AWS::ApiGatewayV2::Authorizer
+    DeletionPolicy: "Retain"
+    Properties:
+      Name: cognito_${self:app}-${self:service}-${self:provider.stage}_authorizer
+      ApiId: { "Ref" : "HttpApi" }
+      AuthorizerType: JWT
+      IdentitySource: $request.header.Authorization
+      JwtConfiguration:
+        Audience:
+          - Ref: !ImportValue ${self:app}-${self:provider.stage}-UserPoolClientId
+      Issuer:
+        Fn::Join:
+          - ""
+          - - "https://cognito-idp."
+            - "${opt:region, self:provider.region}"
+            - ".amazonaws.com/"
+            - Ref: !ImportValue ${self:app}-${self:provider.stage}-UserPoolId

@@ -1,0 +1,18 @@
+deleteSingleWholesalerCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-deleteSingleWholesalerCS
+  description: Deletes single wholesaler record
+  handler: controllers/wholesale/delete-single-wholesaler/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /wholesale/delete-single-wholesaler/{wholesaler_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+organizationDigestCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partners
+  name: ${self:app}-${self:provider.stage}-organizationDigestCS
+  description: Generate an organization digest of current org partners and their clients
+  handler: controllers/partner/organization-digest/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/organization-digest/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

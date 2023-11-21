@@ -1,0 +1,21 @@
+createUserSecurityResponse:
+  tracing: PassThrough
+  tags:
+    RESOURCE: security-question
+  name: ${self:app}-${self:provider.stage}-createUserSecurityResponse
+  description: Create a security question for a specific user of a specific account
+  handler: controllers/security-question/create-user-security-response/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: security-questions/response/create/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

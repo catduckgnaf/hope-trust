@@ -1,0 +1,21 @@
+getActiveUserPlansBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:provider.stage}-getActiveUserPlansBenefits
+  description: Get all activeuser plans
+  handler: controllers/plan/get-active-user-plans/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: plans/get-active-user-plans/{account_id}/{cognito_id}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

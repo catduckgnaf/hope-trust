@@ -1,0 +1,18 @@
+sendEntityInvitation:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-sendEntityInvitation
+  description: Send a partner an invitation to sign up
+  handler: controllers/partner/send-entity-invitation/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/send-entity-invitation/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

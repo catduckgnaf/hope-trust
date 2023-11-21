@@ -1,0 +1,21 @@
+getSingleDocumentBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:provider.stage}-getSingleDocumentBenefits
+  description: Get a single account document by ID
+  handler: controllers/document/get-single-document/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: documents/get-single-document/{account_id}/{cognito_id}
+        method: POST
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

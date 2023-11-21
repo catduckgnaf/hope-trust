@@ -1,0 +1,16 @@
+weeklyOnboardDigestCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: cron
+  name: ${self:app}-${self:provider.stage}-weeklyOnboardDigestCS
+  description: Spawn a weekly cron to output a weekly onboard report
+  handler: controllers/cron/weekly-onboard-digest/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - schedule:
+        rate: cron(0 23 ? * FRI *)
+        enabled: ${self:custom.common.schedule_status.${opt:stage, "default"}}

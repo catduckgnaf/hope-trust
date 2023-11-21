@@ -1,0 +1,18 @@
+deleteSurveysCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: surveys
+  name: ${self:app}-${self:provider.stage}-deleteSurveysCS
+  description: Delete many surveys
+  handler: controllers/survey/delete-surveys/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey/delete-surveys/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

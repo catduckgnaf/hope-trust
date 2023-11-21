@@ -1,0 +1,18 @@
+createSingleChargeCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:provider.stage}-createSingleChargeCS
+  description: Create a single Stripe charge for a customer
+  handler: controllers/stripe/create-single-charge/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/create-single-charge/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

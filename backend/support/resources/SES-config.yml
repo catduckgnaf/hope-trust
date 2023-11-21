@@ -1,0 +1,35 @@
+Resources:
+  Permission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: ${self:app}-${self:provider.stage}-${self:custom.common.email_routing_lambdas.${self:app}}
+      Principal: ses.amazonaws.com
+      SourceAccount: ${self:custom.common.aws_account_id}
+  RuleSet:
+    Type: AWS::SES::ReceiptRuleSet
+    DeletionPolicy: "Retain"
+    Condition: CreateSESReceiptRuleset
+    Properties:
+      RuleSetName: SES-receipt-ruleset
+  SESReceiveReceiptRule:
+    Type: 'AWS::SES::ReceiptRule'
+    DependsOn:
+      - Permission
+    Properties:
+      RuleSetName: SES-receipt-ruleset
+      Rule:
+        Name: ${self:app}-${self:provider.stage}-SES-receipt-rule
+        Enabled: true
+        ScanEnabled: true
+        TlsPolicy: Require
+        Recipients:
+          - ${self:custom.common.messaging_service_urls.${self:provider.stage}}
+        Actions:
+          - S3Action:
+              BucketName : ${self:service}-${self:provider.stage}-email-bucket
+              # KmsKeyArn : ${self:provider.kmsKeyArn}
+              ObjectKeyPrefix: ${self:service}-${self:provider.stage}-emails
+          - LambdaAction:
+              FunctionArn: arn:aws:lambda:${self:provider.region}:${self:custom.common.aws_account_id}:function:${self:app}-${self:provider.stage}-${self:custom.common.email_routing_lambdas.${self:app}}
+              InvocationType: Event

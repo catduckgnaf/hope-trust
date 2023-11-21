@@ -1,0 +1,16 @@
+helloSignContractUpdatedWebhook:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hello-sign
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-helloSignContractUpdatedWebhook
+  description: Mark a survey complete
+  handler: controllers/hello-sign/webhooks/contract-updated/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hello-sign/webhooks/contract-updated
+        method: post

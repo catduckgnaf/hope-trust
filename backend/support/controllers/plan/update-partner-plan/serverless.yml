@@ -1,0 +1,18 @@
+updatePartnerPlanCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:provider.stage}-updatePartnerPlanCS
+  description: Update partner plan by ID
+  handler: controllers/plan/update-partner-plan/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plans/update-partner-plan/{plan_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+createReferralCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: referral
+  name: ${self:app}-${self:provider.stage}-createReferralCS
+  description: Create a new referral config
+  handler: controllers/referral/create-referral/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /referrals/create-referral/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

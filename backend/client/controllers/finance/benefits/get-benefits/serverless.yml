@@ -1,0 +1,18 @@
+getBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: finance
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getBenefits
+  description: Gets benefits for a specific account
+  handler: controllers/finance/benefits/get-benefits/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /finance/get-benefits/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

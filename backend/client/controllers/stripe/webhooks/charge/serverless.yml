@@ -1,0 +1,16 @@
+stripeChargeWebhook:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-stripeChargeWebhook
+  description: Webhook for listening for incoming Stripe charges
+  handler: controllers/stripe/webhooks/charge/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/webhooks/charge
+        method: post

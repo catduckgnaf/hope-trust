@@ -1,0 +1,16 @@
+plaidUpdateWebhook:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plaid
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-plaidUpdateWebhook
+  description: Receive item updates from plaid for specific Plaid item
+  handler: controllers/plaid/webhooks/update/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plaid/webhooks/update/{account_id}/{cognito_id}
+        method: post

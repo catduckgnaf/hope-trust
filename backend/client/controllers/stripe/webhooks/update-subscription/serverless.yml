@@ -1,0 +1,16 @@
+stripeCancelSubscriptionWebhook:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-stripeCancelSubscriptionWebhook
+  description: Stripe webhook, update a subscription
+  handler: controllers/stripe/webhooks/update-subscription/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/webhooks/update-subscription
+        method: post

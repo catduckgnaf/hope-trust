@@ -1,0 +1,16 @@
+createHubspotCompany:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hubspot
+  name: ${self:app}-${self:provider.stage}-createHubspotCompany
+  description: Create a Hubspot company
+  handler: controllers/hubspot/create-hubspot-company/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hubspot/create-hubspot-company/{cognito_id}
+        method: post

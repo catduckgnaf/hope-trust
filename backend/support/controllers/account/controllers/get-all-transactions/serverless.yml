@@ -1,0 +1,18 @@
+getAllTransactionsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-getAllTransactionsCS
+  description: Gets all transactions for all customers
+  handler: controllers/get-all-transactions/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /get-all-transactions/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

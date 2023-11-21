@@ -1,0 +1,18 @@
+deleteAccountMembership:
+  tracing: PassThrough
+  tags:
+    RESOURCE: membership
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-deleteAccountMembership
+  description: Delete a single account membership
+  handler: controllers/membership/delete-account-membership/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /membership/delete-account-membership/{membership_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+createPartnerReferral:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createPartnerReferral
+  description: Create a referral code for a partner, attach code to their root membership
+  handler: controllers/partner/create-partner-referral/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/create-partner-referral/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

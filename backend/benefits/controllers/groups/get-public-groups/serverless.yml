@@ -1,0 +1,17 @@
+getPublicGroupsBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getPublicGroupsBenefits
+  description: Get all active groups
+  handler: controllers/groups/get-public-groups/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: groups/get-public-groups
+        method: get
+        cors: true

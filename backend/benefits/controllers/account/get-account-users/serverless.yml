@@ -1,0 +1,21 @@
+getAccountUsersBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-getAccountUsersBenefits
+  description: Gets all users associated with an account
+  handler: controllers/account/get-account-users/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: accounts/get-account-users/{account_id}/{cognito_id}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

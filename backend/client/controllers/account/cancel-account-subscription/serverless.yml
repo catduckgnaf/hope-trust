@@ -1,0 +1,18 @@
+cancelAccountSubscription:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-cancelAccountSubscription
+  description: Cancel account subscription
+  handler: controllers/account/cancel-account-subscription/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /accounts/cancel-account-subscription/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+createRequestTicket:
+  tracing: PassThrough
+  tags:
+    RESOURCE: zendesk
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createRequestTicket
+  description: Create a new zendesk request ticket for a specific user in a specific account
+  handler: controllers/zendesk/create-request-ticket/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /zendesk/create-request-ticket/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+getPendingApprovalsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-getPendingApprovalsCS
+  description: Gets all pending benefits approvals
+  handler: controllers/get-pending-approvals/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /get-pending-approvals/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

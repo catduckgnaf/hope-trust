@@ -1,0 +1,18 @@
+updateSubscriptionRecord:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-updateSubscriptionRecord
+  description: Update a single subscription record by ID
+  handler: controllers/update-subscription-record/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /update-subscription-record/{subscription_lookup_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

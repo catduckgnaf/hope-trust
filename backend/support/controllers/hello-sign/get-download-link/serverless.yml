@@ -1,0 +1,18 @@
+getHelloSignDownloadLinkCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hello-sign
+  name: ${self:app}-${self:provider.stage}-getHelloSignDownloadLinkCS
+  description: Get PDF link for hellosign contract
+  handler: controllers/hello-sign/get-download-link/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hello-sign/get-download-link/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

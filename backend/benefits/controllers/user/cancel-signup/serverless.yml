@@ -1,0 +1,17 @@
+cancelSignupBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-cancelSignupBenefits
+  description: Cancel a signup before creating database records
+  handler: controllers/user/cancel-signup/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: users/cancel-signup/{email}
+        method: get
+        cors: true

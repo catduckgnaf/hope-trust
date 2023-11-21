@@ -1,0 +1,18 @@
+updateUserPlanCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:provider.stage}-updateUserPlanCS
+  description: Update user plan by ID
+  handler: controllers/plan/update-user-plan/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plans/update-user-plan/{plan_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

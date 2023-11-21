@@ -1,0 +1,17 @@
+checkUserEmailBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-checkUserEmailBenefits
+  description: Check if a user email is in the system
+  handler: controllers/user/check-user-email/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: users/check-email/{email}
+        method: get
+        cors: true

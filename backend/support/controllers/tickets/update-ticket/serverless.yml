@@ -1,0 +1,18 @@
+updateTicket:
+  tracing: PassThrough
+  tags:
+    RESOURCE: tickets
+  name: ${self:app}-${self:provider.stage}-updateTicket
+  description: Update a ticket
+  handler: controllers/tickets/update-ticket/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /tickets/update-ticket/{ticket_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

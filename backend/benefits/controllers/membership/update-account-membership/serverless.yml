@@ -1,0 +1,21 @@
+updateAccountMembershipBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: membership
+  name: ${self:app}-${self:provider.stage}-updateAccountMembershipBenefits
+  description: Update a single account membership
+  handler: controllers/membership/update-account-membership/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: membership/update/{account_id}/{cognito_id}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

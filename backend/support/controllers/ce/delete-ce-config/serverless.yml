@@ -1,0 +1,18 @@
+deleteCEConfigCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ce
+  name: ${self:app}-${self:provider.stage}-deleteCEConfigCS
+  description: Delete a CE configuration
+  handler: controllers/ce/delete-ce-config/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /ce/delete-ce-config/{config_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

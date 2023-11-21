@@ -1,0 +1,18 @@
+deleteStripeProductCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:provider.stage}-deleteStripeProductCS
+  description: Delete a product record, archive stripe product
+  handler: controllers/stripe/delete-stripe-product/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/delete-stripe-product/{product_id}/{price_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+updateUserSettings:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-user-updateUserSettings
+  description: Updates a specific user's notification settings for a specific account
+  handler: controllers/update-user-settings/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /settings/notifications/update/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

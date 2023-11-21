@@ -1,0 +1,16 @@
+verifyDiscountCodeCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:provider.stage}-verifyDiscountCodeCS
+  description: Check if a discount code is valid, return code information
+  handler: controllers/stripe/verify-discount-code/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/verify-discount-code
+        method: post

@@ -1,0 +1,16 @@
+updateHubspotDeal:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hubspot
+  name: ${self:app}-${self:provider.stage}-updateHubspotDeal
+  description: Update a Hubspot deal
+  handler: controllers/hubspot/update-hubspot-deal/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hubspot/update-hubspot-deal/{hubspot_deal_id}
+        method: patch

@@ -1,0 +1,16 @@
+getOrgLogoCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-getOrgLogoCS
+  description: Gets single organization logo from database by name
+  handler: controllers/partner/get-organization-logo/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/get-organization-logo/{org_name}
+        method: get

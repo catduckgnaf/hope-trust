@@ -1,0 +1,22 @@
+getAccountRequests:
+  timeout: 30
+  tracing: PassThrough
+  tags:
+    RESOURCE: zendesk
+  name: ${self:app}-${self:provider.stage}-getAccountRequests
+  description: Get all zendesk request tickets for a specific account
+  handler: controllers/zendesk/get-account-requests/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: zendesk/get-account-requests/{account_id}/{cognito_id}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

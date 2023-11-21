@@ -1,0 +1,51 @@
+org: hopeportalservices # get orgId from serverless dashboard
+app: hopetrust-benefits # app name, will be prepended to resource and variable names
+service: ${self:app}-frontend
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, self:custom.defaultStage}
+  kmsKeyArn: arn:aws:kms:us-east-1:876754924956:key/bef141f2-57be-47f5-a7d0-689c4a945762
+  environment:
+    REACT_APP_NAME: ${self:app}
+    REACT_APP_STAGE: ${self:provider.stage}
+    REACT_APP_REGION: ${self:provider.region}
+    REACT_APP_DOMAIN: ${self:custom.domain}
+    REACT_APP_API_BASE: ${self:custom.api_base}
+    REACT_APP_USER_POOL_ID: ${${self:custom.service_secrets}/user-pool-id~true}
+    REACT_APP_APP_CLIENT_ID: ${${self:custom.service_secrets}/app-client-id~true}
+    REACT_APP_IDENTITY_POOL_ID: ${${self:custom.service_secrets}/identity-pool-id~true}
+    REACT_APP_APP_NAME: ${self:custom.domain}
+    REACT_APP_API_SERVICE: ${self:custom.api-service-name}
+    REACT_APP_USERSNAP_API_KEY: ${${self:custom.secrets}/usersnap-api-key~true}
+    REACT_APP_HELLOSIGN_CLIENT_ID: ${${self:custom.secrets}/hello-sign-client-id~true}
+    REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID: ${${self:custom.secrets}/google-analytics-tracking-id~true}
+    REACT_APP_STRIPE_PUBLIC_KEY: ${${self:custom.secrets}/stripe-public-key~true}
+    REACT_APP_FIREBASE_API_KEY: ${${self:custom.secrets}/firebase-api-key~true}
+
+plugins:
+  - serverless-offline
+  - serverless-finch
+  - serverless-build-client
+
+custom:
+  app_slug: benefits
+  api_base: ${file(../../backend/custom.yml):common.api_base}
+  domain: benefits.${self:custom.api_base}
+  api-service-name: ${file(../../backend/custom.yml):common.secrets_folder}
+  client:
+    bucketName: ${self:custom.defaultBucket}
+    distributionFolder: ./build
+    indexDocument: index.html
+    errorDocument: index.html
+    uploadOrder:
+      - .*
+      - static/*
+      - index\.html
+  defaultStage: development
+  service_secrets: ssm:/${self:custom.api-service-name}/${self:provider.stage}/${self:custom.app_slug}
+  secrets: ssm:/${self:custom.api-service-name}/${self:provider.stage}
+  defaultBucket: ${self:provider.stage}-${self:custom.domain}

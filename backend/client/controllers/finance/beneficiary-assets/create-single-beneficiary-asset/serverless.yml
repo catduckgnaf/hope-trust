@@ -1,0 +1,18 @@
+createSingleBeneficiaryAsset:
+  tracing: PassThrough
+  tags:
+    RESOURCE: finance
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createSingleBeneficiaryAsset
+  description: Create single beneficiary asset for a specific user in a specific account
+  handler: controllers/finance/beneficiary-assets/create-single-beneficiary-asset/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /finance/create-single-beneficiary-asset/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

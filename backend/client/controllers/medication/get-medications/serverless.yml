@@ -1,0 +1,18 @@
+getMedications:
+  tracing: PassThrough
+  tags:
+    RESOURCE: medication
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getMedications
+  description: Get all medications for an account
+  handler: controllers/medication/get-medications/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /medications/get-medications/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

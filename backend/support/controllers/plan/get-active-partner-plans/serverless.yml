@@ -1,0 +1,18 @@
+getActivePartnerPlansCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:provider.stage}-getActivePartnerPlansCS
+  description: Get all active partner plans
+  handler: controllers/plan/get-active-partner-plans/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plans/get-active-partner-plans/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

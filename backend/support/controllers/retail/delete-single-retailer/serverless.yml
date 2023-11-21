@@ -1,0 +1,18 @@
+deleteSingleRetailerCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-deleteSingleRetailerCS
+  description: Deletes single retailer record
+  handler: controllers/retail/delete-single-retailer/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /retail/delete-single-retailer/{retailer_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

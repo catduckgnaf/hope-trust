@@ -1,0 +1,18 @@
+createAccountProvider:
+  tracing: PassThrough
+  tags:
+    RESOURCE: provider
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createAccountProvider
+  description: Create a new provider for a specific account
+  handler: controllers/provider/create-account-provider/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /providers/create/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+getCustomerSubscriptions:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getCustomerSubscriptions
+  description: Gets all subscriptions owned by a customer
+  handler: controllers/account/get-customer-subscriptions/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /accounts/get-customer-subscriptions/{customer_id}/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

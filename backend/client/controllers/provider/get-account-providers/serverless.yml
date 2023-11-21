@@ -1,0 +1,18 @@
+getAccountProviders:
+  tracing: PassThrough
+  tags:
+    RESOURCE: provider
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getAccountProviders
+  description: Get all providers for an account
+  handler: controllers/provider/get-account-providers/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /providers/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

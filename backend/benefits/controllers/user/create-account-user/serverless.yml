@@ -1,0 +1,21 @@
+createAccountUserBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-createAccountUserBenefits
+  description: Creates a new user and associates them with a previously created account in the database
+  handler: controllers/user/create-account-user/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: users/{cognito_id}/create-account-user
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

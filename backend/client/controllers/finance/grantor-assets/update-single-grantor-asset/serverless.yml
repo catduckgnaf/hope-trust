@@ -1,0 +1,18 @@
+updateSingleGrantorAsset:
+  tracing: PassThrough
+  tags:
+    RESOURCE: finance
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-updateSingleGrantorAsset
+  description: Update single grantor-asset for a specific user in a specific account
+  handler: controllers/finance/grantor-assets/update-single-grantor-asset/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /finance/update-single-grantor-asset/{id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

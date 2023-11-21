@@ -1,0 +1,18 @@
+updateBulkEvents:
+  tracing: PassThrough
+  tags:
+    RESOURCE: schedule
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-updateBulkEvents
+  description: Update bulk events for a specific account
+  handler: controllers/event/update-bulk-events/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /events/update-bulk-events/{series_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

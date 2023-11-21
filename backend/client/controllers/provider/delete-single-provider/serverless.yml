@@ -1,0 +1,18 @@
+deleteSingleProvider:
+  tracing: PassThrough
+  tags:
+    RESOURCE: provider
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-deleteSingleProvider
+  description: deletes single provider from database by ID
+  handler: controllers/provider/delete-single-provider/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /providers/delete-single-provider/{provider_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

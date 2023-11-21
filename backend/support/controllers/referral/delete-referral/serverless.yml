@@ -1,0 +1,18 @@
+deleteReferralCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: referral
+  name: ${self:app}-${self:provider.stage}-deleteReferralCS
+  description: Delete a single referral by ID
+  handler: controllers/referral/delete-referral/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /referrals/delete-referral/{referral_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

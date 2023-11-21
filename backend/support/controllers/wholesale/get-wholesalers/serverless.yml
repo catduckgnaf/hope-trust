@@ -1,0 +1,18 @@
+getWholesalersCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getWholesalersCS
+  description: Get all wholesale memberships associated with a retail account
+  handler: controllers/wholesale/get-wholesalers/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /wholesale/get-wholesalers/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,16 @@
+checkUserEmail:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-user-checkUserEmail
+  description: Check if a user email is in the system
+  handler: controllers/check-user-email/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /check-email/{email}
+        method: get

@@ -1,0 +1,18 @@
+createNewMembershipCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: membership
+  name: ${self:app}-${self:provider.stage}-createNewMembershipCS
+  description: Create a single account membership
+  handler: controllers/membership/create-new-membership/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /membership/create-new-membership/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

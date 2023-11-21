@@ -1,0 +1,16 @@
+partnerQuizComplete:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-partnerQuizComplete
+  description: Mark partner quiz complete
+  handler: controllers/partner/webhooks/complete-quiz/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/webhooks/quiz-complete
+        method: post

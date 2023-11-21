@@ -1,0 +1,16 @@
+surveyGizmoCreateDocumentRecord:
+  tracing: PassThrough
+  tags:
+    RESOURCE: survey
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-surveyGizmoCreateDocumentRecord
+  description: Create single document for a specific user in a specific account
+  handler: controllers/survey-gizmo/webhooks/create-document-record/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey-gizmo/webhooks/create-document-record/{account_id}/{cognito_id}
+        method: post

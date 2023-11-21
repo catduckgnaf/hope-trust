@@ -1,0 +1,18 @@
+deleteSingleEvent:
+  tracing: PassThrough
+  tags:
+    RESOURCE: schedule
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-deleteSingleEvent
+  description: deletes single event from database by ID
+  handler: controllers/event/delete-single-event/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /events/delete-single-event/{event_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

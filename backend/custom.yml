@@ -1,0 +1,56 @@
+common:
+  aws_account_id: 876754924956
+  secrets_folder: "/hopetrust-backend"
+  api_base: hopecareplan.com
+  secrets: ssm:${self:custom.common.secrets_folder}/${self:provider.stage}
+  defaultStage: development
+  memorySize:
+    development: 1024
+    staging: 2048
+    production: 2048
+    default: 512
+  schedule_status:
+    development: true
+    staging: true
+    production: true
+    default: false
+  stack_names:
+    development: ${self:service}-${self:provider.stage}-cfn-stack
+    staging: ${self:service}-${self:provider.stage}-cf-stack
+    production: ${self:service}-${self:provider.stage}-cf-stack
+  api_names:
+    development: ${self:service}-${self:provider.stage}-local-api
+    staging: ${self:service}-${self:provider.stage}-api
+    production: ${self:service}-${self:provider.stage}-api
+  cognito_pool_authorized: # other user pools per app per environment that are authorized to access this app API
+    hopetrust:
+      development:
+        support: arn:aws:cognito-idp:us-east-1:876754924956:userpool/us-east-1_mShZQZlyg
+      staging:
+        support: arn:aws:cognito-idp:us-east-1:876754924956:userpool/us-east-1_ZGEa042Mh
+      production:
+        support: arn:aws:cognito-idp:us-east-1:876754924956:userpool/us-east-1_69LG0pqIZ
+    hopetrust-cs:
+      development:
+      staging:
+      production:
+    hopetrust-benefits:
+      development:
+        support: arn:aws:cognito-idp:us-east-1:876754924956:userpool/us-east-1_mShZQZlyg
+      staging:
+        support: arn:aws:cognito-idp:us-east-1:876754924956:userpool/us-east-1_ZGEa042Mh
+      production:
+        support: arn:aws:cognito-idp:us-east-1:876754924956:userpool/us-east-1_69LG0pqIZ
+  config_validation_status:
+    development: warn
+    staging: off
+    production: off
+    default: warn
+  email_routing_lambdas:
+    hopetrust: receiveApplicationEmail
+    hopetrust-cs: receiveApplicationEmailCS
+    hopetrust-benefits: receiveApplicationEmailBenefits
+  messaging_service_urls:
+    development: development-message.hopecareplan.com
+    staging: staging-message.hopecareplan.com
+    production: message.hopecareplan.com

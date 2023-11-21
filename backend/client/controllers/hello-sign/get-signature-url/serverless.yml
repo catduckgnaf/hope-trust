@@ -1,0 +1,18 @@
+getEmbeddableSignatureLink:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hello-sign
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getEmbeddableSignatureLink
+  description: Get embeddable link for Hello Sign
+  handler: controllers/hello-sign/get-signature-url/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /hello-sign/get-signature-url/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

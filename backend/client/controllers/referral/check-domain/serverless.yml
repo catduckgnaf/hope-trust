@@ -1,0 +1,16 @@
+checkReferralDomain:
+  tracing: PassThrough
+  tags:
+    RESOURCE: referral
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-checkReferralDomain
+  description: Check a referral for a like domain
+  handler: controllers/referral/check-domain/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /referrals/check-domain
+        method: get

@@ -1,0 +1,21 @@
+sendEntityInvitationBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:provider.stage}-sendEntityInvitationBenefits
+  description: Send a benefits entity an invitation to sign up
+  handler: controllers/hello-sign/send-entity-invitation/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: hello-sign/send-entity-invitation/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

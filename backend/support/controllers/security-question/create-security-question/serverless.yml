@@ -1,0 +1,18 @@
+createSecurityQuestionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: security-question
+  name: ${self:app}-${self:provider.stage}-createSecurityQuestionCS
+  description: Create a new security question
+  handler: controllers/security-question/create-security-question/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /security-questions/question/create/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

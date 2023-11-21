@@ -1,0 +1,94 @@
+console: false
+org: hopeportalservices
+app: hopetrust-cs
+service: hopetrust-${self:custom.root}
+configValidationMode: ${self:custom.common.config_validation_status.${opt:stage, "default"}}
+deprecationNotificationMode: warn:summary
+useDotenv: true
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  kmsKeyArn: arn:aws:kms:us-east-1:${self:custom.common.aws_account_id}:key/bef141f2-57be-47f5-a7d0-689c4a945762
+  region: us-east-1
+  stage: ${opt:stage, self:custom.common.defaultStage}
+  stackName: ${self:service}-${self:provider.stage}-cf-stack
+  httpApi:
+    name: ${self:service}-${self:provider.stage}-api
+    disableDefaultEndpoint: true
+    cors: true
+    metrics: true
+    authorizers:
+      ApiGatewayLambdaAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl:
+          !Sub
+            - 'https://cognito-idp.us-east-1.amazonaws.com/${UserPoolId}'
+            - UserPoolId: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/${self:custom.api}/user-pool-id}
+        audience: ${ssm:${self:custom.common.secrets_folder}/${self:provider.stage}/${self:custom.api}/app-client-id}
+  cfnRole: arn:aws:iam::${self:custom.common.aws_account_id}:role/CloudFormationFull
+  memorySize: ${self:custom.common.memorySize.${self:provider.stage}, self:custom.common.memorySize.default}
+  logRetentionInDays: 14
+  versionFunctions: true
+  timeout: 29
+  tags:
+    STAGE: ${opt:stage, self:custom.common.defaultStage}
+    SERVICE: ${self:app}-${self:custom.root}
+  deploymentBucket:
+    name: ${self:service}-${self:provider.region}-deploy-${self:provider.stage}
+    serverSideEncryption: AES256
+  deploymentPrefix: ${self:app}-${self:custom.root}
+  endpointType: REGIONAL
+  logs:
+    httpApi: true
+  tracing:
+    lambda: true
+    apiGateway: true
+  environment: ${file(./variables.yml)}
+
+plugins:
+  - serverless-scriptable-plugin
+  - serverless-prune-plugin
+  - serverless-plugin-warmup
+  - serverless-deployment-bucket
+  - serverless-certificate-creator
+  - serverless-domain-manager
+  - serverless-plugin-split-stacks
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-custom-roles
+
+custom: ${file(./custom.yml)}
+
+functions:
+  - ${file(controllers/get-all-accounts/serverless.yml)}
+  - ${file(controllers/get-all-client-configs/serverless.yml)}
+  - ${file(controllers/get-all-partner-accounts/serverless.yml)}
+  - ${file(controllers/send-client-invitation/serverless.yml)}
+  - ${file(controllers/create-account/serverless.yml)}
+  - ${file(controllers/create-client-account/serverless.yml)}
+  - ${file(controllers/create-benefits-client/serverless.yml)}
+  - ${file(controllers/track-invite-open/serverless.yml)}
+  - ${file(controllers/get-account-features/serverless.yml)}
+  - ${file(controllers/get-all-transactions/serverless.yml)}
+  - ${file(controllers/get-all-users/serverless.yml)}
+  - ${file(controllers/get-cs-users/serverless.yml)}
+  - ${file(controllers/get-pending-approvals/serverless.yml)}
+  - ${file(controllers/get-group-approvals/serverless.yml)}
+  - ${file(controllers/get-wholesale-approvals/serverless.yml)}
+  - ${file(controllers/get-all-products/serverless.yml)}
+  - ${file(controllers/update-account-features/serverless.yml)}
+  - ${file(controllers/update-partner-account/serverless.yml)}
+  - ${file(controllers/get-core-settings/serverless.yml)}
+  - ${file(controllers/update-core-settings/serverless.yml)}
+  - ${file(controllers/increment-app-version/serverless.yml)}
+  - ${file(controllers/update-subscription-record/serverless.yml)}
+  - ${file(controllers/update-single-account/serverless.yml)}
+  - ${file(controllers/get-user-record/serverless.yml)}
+  - ${file(controllers/update-user-record/serverless.yml)}
+  - ${file(controllers/set-user-mfa/serverless.yml)}
+  - ${file(controllers/reset-user-mfa/serverless.yml)}
+  - ${file(controllers/reset-user-password/serverless.yml)}
+  - ${file(controllers/receive-application-email/serverless.yml)}

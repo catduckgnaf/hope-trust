@@ -1,0 +1,18 @@
+getAllPartnerAccountsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-getAllPartnerAccountsCS
+  description: Gets all possibe partner accounts
+  handler: controllers/get-all-partner-accounts/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /get-all-partner-accounts/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

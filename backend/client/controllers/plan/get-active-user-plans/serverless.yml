@@ -1,0 +1,18 @@
+getActiveUserPlans:
+  tracing: PassThrough
+  tags:
+    RESOURCE: plan
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getActiveUserPlans
+  description: Get all activeuser plans
+  handler: controllers/plan/get-active-user-plans/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /plans/get-active-user-plans/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

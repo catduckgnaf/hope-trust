@@ -1,0 +1,17 @@
+surveyGizmoStoreSession:
+  tracing: PassThrough
+  memorySize: 3008
+  tags:
+    RESOURCE: survey
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-surveyGizmoStoreSession
+  description: Store a session for a survey
+  handler: controllers/survey-gizmo/webhooks/store-session/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey-gizmo/webhooks/store-session/{account_id}/{cognito_id}/{survey_name}/{survey_id}
+        method: get

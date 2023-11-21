@@ -1,0 +1,17 @@
+getPublicTeamsBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getPublicTeamsBenefits
+  description: Get all active teams
+  handler: controllers/teams/get-public-teams/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: teams/get-public-teams
+        method: get
+        cors: true

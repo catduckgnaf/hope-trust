@@ -1,0 +1,16 @@
+lookupInviteCode:
+  tracing: PassThrough
+  tags:
+    RESOURCE: accounts
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-lookupInviteCode
+  description: Lookup benefits invite code
+  handler: controllers/account/lookup-invite-code/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /accounts/lookup-invite-code/{invite_code}
+        method: get

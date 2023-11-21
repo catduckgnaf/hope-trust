@@ -1,0 +1,18 @@
+createSingleGrantorAsset:
+  tracing: PassThrough
+  tags:
+    RESOURCE: finance
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createSingleGrantorAsset
+  description: Create single grantor asset for a specific user in a specific account
+  handler: controllers/finance/grantor-assets/create-single-grantor-asset/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /finance/create-single-grantor-asset/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

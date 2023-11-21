@@ -1,0 +1,140 @@
+Resources:
+  SNSRole:
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      RoleName: SNS-${self:app}-${self:provider.stage}-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "cognito-idp.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: ${self:app}-CognitoSNSPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "sns:publish"
+                Resource: "*"
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: "Retain"
+    Properties:
+      UserPoolName: ${self:app}-${self:provider.stage}-user-pool
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      EmailVerificationMessage: 'Your verification code for ${self:app} is {####}.'
+      EmailVerificationSubject: 'Your ${self:app} verification code'
+      SmsAuthenticationMessage: 'Your authentication code for ${self:app} is {####}.'
+      DeviceConfiguration:
+        ChallengeRequiredOnNewDevice: true
+        DeviceOnlyRememberedOnUserPrompt: false
+      AdminCreateUserConfig:
+        InviteMessageTemplate:
+          EmailMessage: 'Your ${self:app} username is {username} and temporary password is {####}.'
+          EmailSubject: Your ${self:app} temporary password
+          SMSMessage: 'Your ${self:app} username is {username} and temporary password is {####}.'
+        AllowAdminCreateUserOnly: false
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      MfaConfiguration: "OPTIONAL"
+      EnabledMfas:
+        - SMS_MFA
+      SmsConfiguration:
+        ExternalId: !Sub ${self:app}-${self:provider.stage}-external
+        SnsCallerArn: !GetAtt SNSRole.Arn
+      EmailConfiguration: 
+        EmailSendingAccount: DEVELOPER
+        From: Hope Trust <info@hopetrust.com>
+        ReplyToEmailAddress: info@hopetrust.com
+        SourceArn: arn:aws:ses:us-east-1:876754924956:identity/info@hopetrust.com
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+          TemporaryPasswordValidityDays: 3
+      Schema:
+        - Name: name
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+        - Name: email
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+        - Name: phone_number
+          AttributeDataType: String
+          Mutable: true
+          Required: false
+
+  CognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    DeletionPolicy: "Retain"
+    Properties:
+       UserPoolId:
+         Ref: CognitoUserPool
+       Domain: ${self:app}-${self:provider.stage}-user-pool
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    DeletionPolicy: "Retain"
+    Properties:
+      ClientName: ${self:app}-${self:provider.stage}-user-pool-client
+      UserPoolId:
+        Ref: CognitoUserPool
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false
+      TokenValidityUnits:
+        AccessToken: days
+        IdToken: days
+        RefreshToken: days
+      AccessTokenValidity: 1
+      RefreshTokenValidity: 1
+      IdTokenValidity: 1
+      WriteAttributes:
+        - "name"
+        - "email"
+        - "phone_number"
+      ReadAttributes:
+        - "name"
+        - "email"
+        - "phone_number"
+
+  ApiGatewayAuthorizer:
+    DependsOn:
+    - ApiGatewayRestApi
+    Type: AWS::ApiGateway::Authorizer
+    DeletionPolicy: "Retain"
+    Properties:
+      Name: cognito_${self:app}-${self:provider.stage}_authorizer
+      RestApiId: { "Ref" : "ApiGatewayRestApi" }
+      IdentitySource: method.request.header.Authorization
+      Type: COGNITO_USER_POOLS
+      ProviderARNs:
+      - Fn::GetAtt: [ "CognitoUserPool", "Arn" ]
+      - ${self:custom.common.cognito_pool_authorized.${self:app}.${self:provider.stage}.support}
+
+# Print out the Id of the User Pool that is created
+Outputs:
+  UserPoolId:
+    Value:
+      Ref: CognitoUserPool
+
+  UserPoolClientId:
+    Value:
+      Ref: CognitoUserPoolClient

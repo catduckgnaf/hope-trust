@@ -1,0 +1,18 @@
+deleteSecurityQuestionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: security-question
+  name: ${self:app}-${self:provider.stage}-deleteSecurityQuestionCS
+  description: deletes single security question from database by ID
+  handler: controllers/security-question/delete-security-question/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /security-questions/delete-security-question/{question_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

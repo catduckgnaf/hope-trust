@@ -1,0 +1,168 @@
+org: hopeportalservices
+app: hopetrust-benefits
+service: hopetrust-benefits-backend
+configValidationMode: ${self:custom.common.config_validation_status.${opt:stage, "default"}}
+variablesResolutionMode: null
+unresolvedVariablesNotificationMode: warn
+deprecationNotificationMode: warn:summary
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  kmsKeyArn: arn:aws:kms:us-east-1:${self:custom.common.aws_account_id}:key/bef141f2-57be-47f5-a7d0-689c4a945762
+  region: us-east-1
+  stage: ${opt:stage, self:custom.common.defaultStage}
+  stackName: ${self:service}-${self:provider.stage}-cf-stack
+  apiName: ${self:service}-${self:provider.stage}-api
+  cfnRole: arn:aws:iam::${self:custom.common.aws_account_id}:role/CloudFormationFull
+  memorySize: ${self:custom.common.memorySize.${self:provider.stage}, self:custom.common.memorySize.default}
+  lambdaHashingVersion: 20201221
+  logRetentionInDays: 14
+  versionFunctions: true
+  timeout: 30
+  tags:
+    STAGE: ${opt:stage, self:custom.common.defaultStage}
+    SERVICE: ${self:app}
+  deploymentBucket:
+    name: ${self:app}-${self:provider.region}-deployment-bucket-${self:provider.stage}
+    serverSideEncryption: AES256
+  deploymentPrefix: ${self:app}
+  endpointType: Edge
+  tracing:
+    lambda: true
+    apiGateway: true
+  environment: ${file(./variables.yml)}
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-plugin-warmup
+  - serverless-deployment-bucket
+  - serverless-certificate-creator
+  - serverless-domain-manager
+  - serverless-offline-dotenv
+  - serverless-offline
+  - serverless-offline-scheduler
+  - serverless-plugin-split-stacks
+  - serverless-webpack
+  - serverless-plugin-custom-roles
+  
+custom: ${file(./custom.yml)}
+
+functions:
+  # Account routes
+  - ${file(controllers/account/create-account/serverless.yml)}
+  - ${file(controllers/account/get-account-features/serverless.yml)}
+  - ${file(controllers/account/get-core-settings/serverless.yml)}
+  - ${file(controllers/account/cancel-join-request/serverless.yml)}
+  - ${file(controllers/account/get-account-users/serverless.yml)}
+  - ${file(controllers/account/update-benefits-config/serverless.yml)}
+  # Account Membership routes
+  - ${file(controllers/membership/update-account-membership/serverless.yml)}
+  - ${file(controllers/membership/delete-account-membership/serverless.yml)}
+  - ${file(controllers/membership/approve-account-membership/serverless.yml)}
+  - ${file(controllers/membership/create-new-membership/serverless.yml)}
+  # User routes
+  - ${file(controllers/user/create-user/serverless.yml)}
+  - ${file(controllers/user/get-single-user/serverless.yml)}
+  - ${file(controllers/user/update-single-user/serverless.yml)}
+  - ${file(controllers/user/delete-single-user/serverless.yml)}
+  - ${file(controllers/user/reset-user-mfa/serverless.yml)}
+  - ${file(controllers/user/update-user-settings/serverless.yml)}
+  - ${file(controllers/user/check-user-email/serverless.yml)}
+  - ${file(controllers/user/check-username/serverless.yml)}
+  - ${file(controllers/user/forgot-password/serverless.yml)}
+  - ${file(controllers/user/cancel-signup/serverless.yml)}
+  - ${file(controllers/user/create-account-user/serverless.yml)}
+  - ${file(controllers/user/delete-account-user/serverless.yml)}
+  - ${file(controllers/user/reset-user-password/serverless.yml)}
+  - ${file(controllers/user/update-account-user/serverless.yml)}
+  # Document routes
+  - ${file(controllers/document/get-account-documents/serverless.yml)}
+  - ${file(controllers/document/get-signed-url/serverless.yml)}
+  - ${file(controllers/document/get-single-document/serverless.yml)}
+  - ${file(controllers/document/create-single-document/serverless.yml)}
+  - ${file(controllers/document/update-single-document/serverless.yml)}
+  - ${file(controllers/document/delete-single-document/serverless.yml)}
+  # Hubspot routes
+  - ${file(controllers/hubspot/create-hubspot-contact/serverless.yml)}
+  - ${file(controllers/hubspot/update-hubspot-contact/serverless.yml)}
+  - ${file(controllers/hubspot/create-hubspot-deal/serverless.yml)}
+  - ${file(controllers/hubspot/update-hubspot-deal/serverless.yml)}
+  - ${file(controllers/hubspot/create-hubspot-company/serverless.yml)}
+  - ${file(controllers/hubspot/update-hubspot-company/serverless.yml)}
+  - ${file(controllers/hubspot/get-visitor-token/serverless.yml)}
+  - ${file(controllers/hubspot/add-contact-to-company/serverless.yml)}
+  # Permission routes
+  - ${file(controllers/permission/add-user-permissions/serverless.yml)}
+  - ${file(controllers/permission/remove-user-permissions/serverless.yml)}
+  # Security Question routes
+  - ${file(controllers/security-question/get-security-questions/serverless.yml)}
+  - ${file(controllers/security-question/create-user-security-response/serverless.yml)}
+  - ${file(controllers/security-question/get-user-security-responses/serverless.yml)}
+  # HelloSign routes
+  - ${file(controllers/hello-sign/get-signature-url/serverless.yml)}
+  - ${file(controllers/hello-sign/get-download-link/serverless.yml)}
+  - ${file(controllers/hello-sign/send-entity-invitation/serverless.yml)}
+  # Stripe routes
+  - ${file(controllers/stripe/create-subscription/serverless.yml)}
+  - ${file(controllers/stripe/verify-discount-code/serverless.yml)}
+  # Wholesale routes
+  - ${file(controllers/wholesale/get-wholesalers/serverless.yml)}
+  - ${file(controllers/wholesale/get-public-wholesalers/serverless.yml)}
+  - ${file(controllers/wholesale/create-single-wholesaler/serverless.yml)}
+  - ${file(controllers/wholesale/update-single-wholesaler/serverless.yml)}
+  - ${file(controllers/wholesale/approve-wholesale-request/serverless.yml)}
+  - ${file(controllers/wholesale/decline-wholesale-request/serverless.yml)}
+  - ${file(controllers/wholesale/get-wholesale-approvals/serverless.yml)}
+  # Retail routes
+  - ${file(controllers/retail/get-retailers/serverless.yml)}
+  - ${file(controllers/retail/get-public-retailers/serverless.yml)}
+  - ${file(controllers/retail/create-single-retailer/serverless.yml)}
+  - ${file(controllers/retail/update-single-retailer/serverless.yml)}
+  # Agent routes
+  - ${file(controllers/agents/get-agents/serverless.yml)}
+  - ${file(controllers/agents/get-public-agents/serverless.yml)}
+  - ${file(controllers/agents/create-single-agent/serverless.yml)}
+  - ${file(controllers/agents/update-single-agent/serverless.yml)}
+  # Group routes
+  - ${file(controllers/groups/get-groups/serverless.yml)}
+  - ${file(controllers/groups/get-public-groups/serverless.yml)}
+  - ${file(controllers/groups/create-single-group/serverless.yml)}
+  - ${file(controllers/groups/create-new-group/serverless.yml)}
+  - ${file(controllers/groups/update-single-group/serverless.yml)}
+  - ${file(controllers/groups/approve-group-request/serverless.yml)}
+  - ${file(controllers/groups/decline-group-request/serverless.yml)}
+  - ${file(controllers/groups/get-group-approvals/serverless.yml)}
+  # Team routes
+  - ${file(controllers/teams/get-teams/serverless.yml)}
+  - ${file(controllers/teams/get-public-teams/serverless.yml)}
+  - ${file(controllers/teams/create-single-team/serverless.yml)}
+  - ${file(controllers/teams/update-single-team/serverless.yml)}
+  - ${file(controllers/teams/create-new-team/serverless.yml)}
+  # Client routes
+  - ${file(controllers/clients/get-clients/serverless.yml)}
+  - ${file(controllers/clients/create-client-account/serverless.yml)}
+  - ${file(controllers/clients/create-benefits-client/serverless.yml)}
+  - ${file(controllers/clients/update-user-record/serverless.yml)}
+  - ${file(controllers/clients/create-new-user/serverless.yml)}
+  - ${file(controllers/clients/send-client-invitation/serverless.yml)}
+  # Zendesk routes
+  - ${file(controllers/zendesk/get-account-request/serverless.yml)}
+  - ${file(controllers/zendesk/get-account-requests/serverless.yml)}
+  - ${file(controllers/zendesk/create-request-ticket/serverless.yml)}
+  - ${file(controllers/zendesk/update-request-ticket/serverless.yml)}
+  - ${file(controllers/zendesk/delete-request-ticket/serverless.yml)}
+  # Message routes
+  - ${file(controllers/message/send-message/serverless.yml)}
+  - ${file(controllers/message/get-messages/serverless.yml)}
+  - ${file(controllers/message/update-message/serverless.yml)}
+  # Plan routes
+  - ${file(controllers/plan/get-active-user-plans/serverless.yml)}
+
+
+resources:
+  - ${file(resources/api-gateway-errors.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
+  - ${file(resources/s3-uploads-bucket.yml)}

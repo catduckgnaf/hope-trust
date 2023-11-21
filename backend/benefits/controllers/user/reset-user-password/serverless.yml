@@ -1,0 +1,23 @@
+resetUserPasswordBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-resetUserPasswordBenefits
+  description: Reset a single users password
+  handler: controllers/user/reset-user-password/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+      Resource: "*"
+  events:
+    - http:
+        path: users/reset-user-password/{cognito_id}/{account_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

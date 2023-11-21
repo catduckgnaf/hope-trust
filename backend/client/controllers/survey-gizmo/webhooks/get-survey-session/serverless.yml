@@ -1,0 +1,16 @@
+surveyGizmoGetSurveySession:
+  tracing: PassThrough
+  tags:
+    RESOURCE: survey
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-surveyGizmoGetSurveySession
+  description: Get latest survey session for a specific account
+  handler: controllers/survey-gizmo/webhooks/get-survey-session/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey-gizmo/webhooks/get-survey-session/{account_id}/{cognito_id}/{survey_id}
+        method: get

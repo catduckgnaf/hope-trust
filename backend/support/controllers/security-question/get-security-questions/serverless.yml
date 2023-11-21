@@ -1,0 +1,18 @@
+getSecurityQuestionsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: security-question
+  name: ${self:app}-${self:provider.stage}-getSecurityQuestionsCS
+  description: Get all possible security questions
+  handler: controllers/security-question/get-security-questions/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /security-questions/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,21 @@
+deleteSingleUserBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-deleteSingleUserBenefits
+  description: deletes single user from database by ID
+  handler: controllers/user/delete-single-user/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: users/delete/{account_id}/{cognito_id}
+        method: delete
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

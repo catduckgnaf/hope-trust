@@ -1,0 +1,21 @@
+sendClientInvitationBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:provider.stage}-sendClientInvitationBenefits
+  description: Send a benefits client an invitation to sign up
+  handler: controllers/clients/send-client-invitation/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: clients/send-client-invitation/{account_id}/{cognito_id}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

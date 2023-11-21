@@ -1,0 +1,17 @@
+getPublicWholesalersBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getPublicWholesalersBenefits
+  description: Get all active wholesalers
+  handler: controllers/wholesale/get-public-wholesalers/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: wholesale/get-public-wholesalers
+        method: get
+        cors: true

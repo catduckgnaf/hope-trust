@@ -1,0 +1,16 @@
+checkUsernameCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-user-checkUsernameCS
+  description: Check if a user username is in the system
+  handler: controllers/check-username/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /check-username/{username}
+        method: get

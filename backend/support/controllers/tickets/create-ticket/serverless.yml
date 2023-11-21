@@ -1,0 +1,18 @@
+createTicket:
+  tracing: PassThrough
+  tags:
+    RESOURCE: tickets
+  name: ${self:app}-${self:provider.stage}-createTicket
+  description: Create a new ticket
+  handler: controllers/tickets/create-ticket/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /tickets/create-ticket/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+createSingleDocument:
+  tracing: PassThrough
+  tags:
+    RESOURCE: document
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createSingleDocument
+  description: Create single document for a specific user in a specific account
+  handler: controllers/document/create-single-document/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /documents/create/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

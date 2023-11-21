@@ -1,0 +1,17 @@
+getCoreSettingsBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-getCoreSettingsBenefits
+  description: Get core app settings
+  handler: controllers/account/get-core-settings/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: accounts/get-core-settings
+        method: get
+        cors: true

@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.staging.hopecareplan",
+      "sha256_cert_fingerprints": ["C9:F9:67:5E:1A:52:90:9D:07:49:7A:3A:5C:B0:A8:66:52:76:7A:B5:8C:66:0E:6F:37:41:2A:88:3A:83:14:C3","81:C8:67:2C:74:14:B7:6B:4C:A9:89:FC:45:9B:98:64:A5:EA:F4:60:08:AB:4B:68:86:A4:25:EE:12:01:D6:9E"]
+    }
+  }
+]

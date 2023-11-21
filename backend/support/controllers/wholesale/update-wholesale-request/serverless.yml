@@ -1,0 +1,18 @@
+updateWholesaleRequest:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-updateWholesaleRequest
+  description: Update a wholesale request
+  handler: controllers/wholesale/update-wholesale-request/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /wholesale/update-wholesale-request/{request_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

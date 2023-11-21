@@ -1,0 +1,18 @@
+deleteTickets:
+  tracing: PassThrough
+  tags:
+    RESOURCE: tickets
+  name: ${self:app}-${self:provider.stage}-deleteTickets
+  description: Delete many tickets
+  handler: controllers/tickets/delete-tickets/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /tickets/delete-tickets/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

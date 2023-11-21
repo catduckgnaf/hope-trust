@@ -1,0 +1,18 @@
+linkUserAccount:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-linkUserAccount
+  description: Link 2 accounts by account owner email
+  handler: controllers/account/link-user-account/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /accounts/link-user-account/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

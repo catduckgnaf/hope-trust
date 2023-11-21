@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.development.hopecareplan",
+      "sha256_cert_fingerprints": ["70:D5:81:5D:D0:29:07:52:79:A4:C0:9E:90:36:87:9A:D4:5C:61:77:01:E0:DE:2E:D9:73:CF:65:C5:9D:5B:7C","B6:20:5E:5D:EC:8A:7B:2E:42:68:05:D3:A4:F4:29:67:89:10:98:FA:53:B7:0F:12:78:47:12:7E:01:A3:03:D4"]
+    }
+  }
+]

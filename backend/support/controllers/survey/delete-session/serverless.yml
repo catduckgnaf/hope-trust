@@ -1,0 +1,18 @@
+deleteSessionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: surveys
+  name: ${self:app}-${self:provider.stage}-deleteSessionCS
+  description: Deletes a session
+  handler: controllers/survey/delete-session/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey/delete-session/{session_id}/{account_id}/{cognito_id}
+        method: delete
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

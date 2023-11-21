@@ -1,0 +1,18 @@
+getUserSecurityResponses:
+  tracing: PassThrough
+  tags:
+    RESOURCE: security-question
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getUserSecurityResponses
+  description: Get all security question responses for a specific user of a specific account
+  handler: controllers/security-question/get-user-security-responses/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /security-questions/user/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

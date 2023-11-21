@@ -1,0 +1,19 @@
+calculateMYTO:
+  tracing: PassThrough
+  memorySize: 2048
+  tags:
+    RESOURCE: finance
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-calculateMYTO
+  description: Run a single MYTO calculation
+  handler: controllers/finance/myto/calculate-myto/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /finance/calculate-myto/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

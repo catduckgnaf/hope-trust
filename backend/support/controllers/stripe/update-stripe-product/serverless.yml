@@ -1,0 +1,18 @@
+updateStripeProductCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: stripe
+  name: ${self:app}-${self:provider.stage}-updateStripeProductCS
+  description: Update a stripe product and product record
+  handler: controllers/stripe/update-stripe-product/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /stripe/update-stripe-product/{product_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

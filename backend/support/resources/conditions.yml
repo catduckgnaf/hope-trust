@@ -1,0 +1,6 @@
+Conditions:
+    # Only create the SES Receipt ruleset setup in the dev stage
+    CreateSESReceiptRuleset:
+      Fn::Equals:
+        - ${self:provider.stage}
+        - development

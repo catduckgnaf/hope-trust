@@ -1,0 +1,18 @@
+getOrganizationPartners:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getOrganizationPartners
+  description: Get all partner records for a specific organization
+  handler: controllers/partner/get-organization-partners/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/get-organization-partners/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

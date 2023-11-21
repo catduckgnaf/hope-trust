@@ -1,0 +1,18 @@
+getSurveySessions:
+  tracing: PassThrough
+  tags:
+    RESOURCE: survey
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getSurveySessions
+  description: Get latest survey sessions for a specific account
+  handler: controllers/survey-gizmo/get-survey-sessions/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey-gizmo/get-survey-sessions/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+updateReferralCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: referral
+  name: ${self:app}-${self:provider.stage}-updateReferralCS
+  description: Update a referral
+  handler: controllers/referral/update-referral/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /referrals/update-referral/{referral_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+updateSessionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: surveys
+  name: ${self:app}-${self:provider.stage}-updateSessionCS
+  description: Update a session
+  handler: controllers/survey/update-session/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey/update-session/{session_id}/{account_id}/{cognito_id}
+        method: patch
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

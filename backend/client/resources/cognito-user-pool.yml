@@ -1,0 +1,128 @@
+Resources:
+  SNSRole:
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      RoleName: SNS-${self:provider.stage}-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "cognito-idp.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "CognitoSNSPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "sns:publish"
+                Resource: "*"
+# Run on first deployment only - create user pool and client
+#   CognitoUserPool:
+#     Type: AWS::Cognito::UserPool
+#     DeletionPolicy: "Retain"
+#     Properties:
+#       UserPoolName: ${self:provider.stage}-user-pool
+#       AccountRecoverySetting:
+#         RecoveryMechanisms:
+#           - Name: verified_email
+#             Priority: 1
+#       EmailVerificationMessage: 'Your verification code for ${self:app} is {####}.'
+#       EmailVerificationSubject: 'Your ${self:app} verification code'
+#       SmsAuthenticationMessage: 'Your authentication code for ${self:app} is {####}.'
+#       DeviceConfiguration:
+#         ChallengeRequiredOnNewDevice: true
+#         DeviceOnlyRememberedOnUserPrompt: false
+#       AdminCreateUserConfig:
+#         InviteMessageTemplate:
+#           EmailMessage: 'Your ${self:app} username is {username} and temporary password is {####}.'
+#           EmailSubject: Your ${self:app} temporary password
+#           SMSMessage: 'Your ${self:app} username is {username} and temporary password is {####}.'
+#         AllowAdminCreateUserOnly: false
+#       UsernameAttributes:
+#         - email
+#       AutoVerifiedAttributes:
+#         - email
+#       MfaConfiguration: "OPTIONAL"
+#       EnabledMfas:
+#         - SMS_MFA
+#       SmsConfiguration:
+#         ExternalId: !Sub ${self:provider.stage}-${self:app}-external
+#         SnsCallerArn: !GetAtt SNSRole.Arn
+#       EmailConfiguration: 
+#         EmailSendingAccount: DEVELOPER
+#         From: Hope Trust <info@hopetrust.com>
+#         ReplyToEmailAddress: info@hopetrust.com
+#         SourceArn: arn:aws:ses:us-east-1:876754924956:identity/info@hopetrust.com
+#       Policies:
+#         PasswordPolicy:
+#           MinimumLength: 8
+#           RequireLowercase: true
+#           RequireNumbers: true
+#           RequireSymbols: false
+#           RequireUppercase: true
+#           TemporaryPasswordValidityDays: 3
+#       Schema:
+#         - Name: name
+#           AttributeDataType: String
+#           Mutable: true
+#           Required: true
+#         - Name: email
+#           AttributeDataType: String
+#           Mutable: true
+#           Required: true
+#         - Name: phone_number
+#           AttributeDataType: String
+#           Mutable: true
+#           Required: false
+
+#   CognitoUserPoolClient:
+#     Type: AWS::Cognito::UserPoolClient
+#     DeletionPolicy: "Retain"
+#     Properties:
+#       # Generate an app client name based on the stage
+#       ClientName: ${self:provider.stage}-user-pool-client
+#       UserPoolId:
+#         Ref: CognitoUserPool
+#       ExplicitAuthFlows:
+#         - ALLOW_USER_SRP_AUTH
+#         - ALLOW_REFRESH_TOKEN_AUTH
+#       GenerateSecret: false
+#       TokenValidityUnits:
+#         AccessToken: days
+#         IdToken: days
+#         RefreshToken: days
+#       AccessTokenValidity: 1
+#       RefreshTokenValidity: 1
+#       IdTokenValidity: 1
+#       WriteAttributes:
+#         - "name"
+#         - "email"
+#         - "phone_number"
+#       ReadAttributes:
+#         - "name"
+#         - "email"
+#         - "phone_number"
+
+# # Print out the Id of the User Pool that is created
+# Outputs:
+#   UserPoolId:
+#     Value:
+#       Ref: CognitoUserPool
+#     Export:
+#       Name: ${self:app}-${self:provider.stage}-UserPoolId
+
+#   UserPoolArn:
+#     Value: !GetAtt CognitoUserPool.Arn
+#     Export:
+#       Name: ${self:app}-${self:provider.stage}-UserPoolARN
+
+#   UserPoolClientId:
+#     Value:
+#       Ref: CognitoUserPoolClient
+#     Export:
+#       Name: ${self:app}-${self:provider.stage}-UserPoolClientId

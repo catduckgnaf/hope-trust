@@ -1,0 +1,17 @@
+processSurveyQueueCS:
+  tracing: PassThrough
+  timeout: 300
+  tags:
+    RESOURCE: cron
+  name: ${self:app}-${self:provider.stage}-processSurveyQueueCS
+  description: Check for processing survey records, attempt to process and update
+  handler: controllers/cron/process-survey-queue/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - schedule:
+        rate: rate(10 minutes)
+        enabled: ${self:custom.common.schedule_status.${opt:stage, "default"}}

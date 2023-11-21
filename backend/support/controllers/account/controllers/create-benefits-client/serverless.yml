@@ -1,0 +1,18 @@
+createBenefitsClientCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: client
+  name: ${self:app}-${self:provider.stage}-accounts-createBenefitsClientCS
+  description: Create a new benefits record for a client account
+  handler: controllers/create-benefits-client/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /create-benefits-client/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

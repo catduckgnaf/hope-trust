@@ -1,0 +1,18 @@
+getAccountRequests:
+  tracing: PassThrough
+  tags:
+    RESOURCE: zendesk
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getAccountRequests
+  description: Get all zendesk request tickets for a specific account
+  handler: controllers/zendesk/get-account-requests/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /zendesk/get-account-requests/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

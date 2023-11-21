@@ -1,0 +1,17 @@
+createHubspotContact:
+  tracing: PassThrough
+  tags:
+    RESOURCE: hubspot
+  name: ${self:app}-${self:provider.stage}-createHubspotContact
+  description: Create a Hubspot contact
+  handler: controllers/hubspot/create-hubspot-contact/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: hubspot/create-hubspot-contact
+        method: post
+        cors: true

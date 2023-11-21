@@ -1,0 +1,18 @@
+resetUserMFACS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-resetUserMFACS
+  description: Reset a single users MFA preference and disable MFA
+  handler: controllers/user/reset-user-mfa/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /users/reset-user-mfa/{account_id}/{cognito_id}/{access_token}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

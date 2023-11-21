@@ -1,0 +1,18 @@
+createUser:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-user-createUser
+  description: Creates a new user in the database
+  handler: controllers/create-user/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /{cognito_id}/create
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

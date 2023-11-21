@@ -1,0 +1,16 @@
+surveyGizmoGenerateSignedURL:
+  tracing: PassThrough
+  tags:
+    RESOURCE: survey
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-surveyGizmoGenerateSignedURL
+  description: Generate signed URL for survey gizmo document upload
+  handler: controllers/survey-gizmo/webhooks/generate-signed-url/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /survey-gizmo/webhooks/generate-signed-url
+        method: post

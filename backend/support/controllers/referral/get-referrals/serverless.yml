@@ -1,0 +1,18 @@
+getReferralsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: referral
+  name: ${self:app}-${self:provider.stage}-getReferralsCS
+  description: Get all active referrals
+  handler: controllers/referral/get-referrals/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /referrals/get-referrals/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

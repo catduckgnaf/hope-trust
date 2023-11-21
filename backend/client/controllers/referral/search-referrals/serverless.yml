@@ -1,0 +1,16 @@
+searchReferrals:
+  tracing: PassThrough
+  tags:
+    RESOURCE: referral
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-searchReferrals
+  description: Search all referrals by parameter
+  handler: controllers/referral/search-referrals/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /referrals/search-referrals
+        method: get

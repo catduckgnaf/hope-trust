@@ -1,0 +1,17 @@
+getPublicAgentsBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: benefits
+  name: ${self:app}-${self:provider.stage}-getPublicAgentsBenefits
+  description: Get all active agents
+  handler: controllers/agents/get-public-agents/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: agents/get-public-agents
+        method: get
+        cors: true

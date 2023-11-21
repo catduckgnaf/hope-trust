@@ -1,0 +1,59 @@
+common: ${file(../../../custom.yml):common}
+root: ${file(./package.json):name}
+api: ${file(./package.json):api}
+webpack:
+  webpackConfig: ./webpack.config.js
+  includeModules:
+    forceInclude:
+      - request
+      - request-promise
+  packager: npm
+  excludeFiles: '**/*.test.js'
+  series: true
+  package:
+    individually: true
+enterprise:
+  collectLambdaLogs: false
+  disableAwsSpans: true
+  disableHttpSpans: true
+warmup: ${file(./warmup.js):default}
+prune:
+  automatic: true
+  includeLayers: true
+  number: 2
+customCertificate:
+  certificateName: ${self:provider.stage}-api.${self:custom.common.api_base}
+  idempotencyToken: ${self:provider.stage}apihopecareplancom
+  hostedZoneNames: "${self:custom.common.api_base}."
+  region: ${self:provider.region}
+  enabled: true
+  rewriteRecords: false
+serverless-offline:
+  disableScheduledEvents: true
+  reloadHandler: true
+  host: localhost
+  httpPort: ${file(./package.json):port}
+  noTimeout: true
+  noPrependStageInUrl: true
+  noAuth: true
+splitStacks:
+  nestedStackCount: 200
+  perFunction: false
+  perType: true
+  perGroupFunction: false
+customDomain:
+  http:
+    domainName: ${self:provider.stage}-api.${self:custom.common.api_base}
+    certificateName: ${self:provider.stage}-api.${self:custom.common.api_base}
+    basePath: ${self:custom.api}/${self:custom.root}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    autoDomain: false
+    endpointType: regional
+    apiType: http
+    allowPathMatching: false #set to true when moving API types, ie: REST to HTTP
+scriptable:
+  showCommands: false
+  hooks:
+    after:offline:start:init:
+      - cat ../../startup-logo.txt

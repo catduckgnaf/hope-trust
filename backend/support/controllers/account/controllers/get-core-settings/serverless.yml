@@ -1,0 +1,16 @@
+getCoreSettingsCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-getCoreSettingsCS
+  description: Get core app settings
+  handler: controllers/get-core-settings/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /get-core-settings
+        method: get

@@ -1,0 +1,21 @@
+updateUserRecordBenefits:
+  tracing: PassThrough
+  tags:
+    RESOURCE: user
+  name: ${self:app}-${self:provider.stage}-updateUserRecordBenefits
+  description: Updates single user from database by Cognito ID
+  handler: controllers/clients/update-user-record/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - http:
+        path: clients/update-user-record/{account_id}/{cognito_id}/{target_id}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer

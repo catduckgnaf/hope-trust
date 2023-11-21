@@ -1,0 +1,18 @@
+getCECourses:
+  tracing: PassThrough
+  tags:
+    RESOURCE: ce
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-getCECourses
+  description: Get all CE courses
+  handler: controllers/ce/get-ce-courses/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /ce/get-ce-courses/{account_id}/{cognito_id}
+        method: get
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

@@ -1,0 +1,18 @@
+addAccountToSubscriptionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: partner
+  name: ${self:app}-${self:provider.stage}-addAccountToSubscriptionCS
+  description: Transfer a subscription to another customer
+  handler: controllers/partner/add-account-to-subscription/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /partners/add-account-to-subscription/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

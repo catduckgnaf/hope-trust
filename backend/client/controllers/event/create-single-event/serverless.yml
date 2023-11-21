@@ -1,0 +1,18 @@
+createSingleEvent:
+  tracing: PassThrough
+  tags:
+    RESOURCE: schedule
+  name: ${self:app}-${self:custom.api}-${self:provider.stage}-createSingleEvent
+  description: Create a new event for a specific account
+  handler: controllers/event/create-single-event/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /events/create-single-event/{account_id}/{cognito_id}
+        method: post
+        authorizer:
+          name: ApiGatewayLambdaAuthorizer

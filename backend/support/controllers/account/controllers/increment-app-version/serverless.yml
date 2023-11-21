@@ -1,0 +1,16 @@
+incrementAppVersionCS:
+  tracing: PassThrough
+  tags:
+    RESOURCE: account
+  name: ${self:app}-${self:provider.stage}-accounts-incrementAppVersionCS
+  description: Update core settings
+  handler: controllers/increment-app-version/index.handler
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  events:
+    - httpApi:
+        path: /increment-app-version
+        method: get
